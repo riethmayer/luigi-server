@@ -1,0 +1,11 @@
+---
+- name: Update Luigi settings
+  template: src=client.cfg.j2 dest={{ luigi_config_path }}
+  notify: luigi reload
+
+- name: place Luigi daemon init file
+  template: src=luigi-server.init.j2 dest=/etc/init.d/luigi-server mode=0751
+  notify: luigi reload
+
+- name: start luigi server
+  service: name=luigi-server state=started enabled=yes

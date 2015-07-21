@@ -1,0 +1,25 @@
+---
+- name: set up config directory
+  file:
+    path: "{{ luigi_config_path | dirname }}"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+
+- name: install sqlite
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - sqlite3
+    - libsqlite3-dev
+    - python-sqlalchemy
+
+- name: install luigi
+  pip:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - luigi
+    - tornado

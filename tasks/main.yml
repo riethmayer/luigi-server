@@ -1,0 +1,6 @@
+---
+- include: settings.yml
+  tags: [luigi, luigi-settings]
+
+- include: manage.yml
+  tags: [luigi, luigi-manage]

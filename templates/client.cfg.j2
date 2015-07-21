@@ -1,0 +1,186 @@
+[core]
+# These parameters control core luigi behavior, such as error e-mails and
+# interactions between the worker and scheduler.
+
+default-scheduler-host: localhost
+# Hostname of the machine running the scheduler. Defaults to localhost.
+
+default-scheduler-port: 8082
+# Port of the remote scheduler api process. Defaults to 8082.
+
+# logging_conf_file:
+# Location of the logging configuration file.
+
+no_configure_logging: false
+# If true, logging is not configured. Defaults to false.
+
+parallel-scheduling: false
+# If true, the scheduler will compute complete functions of tasks in
+# parallel using multiprocessing. This can significantly speed up
+# scheduling, but requires that all tasks can be pickled.
+
+retry-external-tasks: false
+# If true, incomplete external tasks (i.e. tasks where the `run()` method is
+# NotImplemented) will be retested for completion while Luigi is running.
+# This means that if external dependencies are satisfied after a workflow has
+# started, any tasks dependent on that resource will be eligible for running.
+# Note: Every time the task remains incomplete, it will count as FAILED, so
+# normal retry logic applies (see: `disable-num-failures` and `retry-delay`).
+# This setting works best with `worker-keep-alive: true`.
+# If false, external tasks will only be evaluated when Luigi is first invoked.
+# In this case, Luigi will not check whether external dependencies are
+# satisfied  while a workflow is in progress, so dependent tasks will remain
+# PENDING until the workflow is reinvoked.
+# Defaults to false for backwards compatibility.
+
+rpc-connect-timeout: 10.0
+# Number of seconds to wait before timing out when making an API call.
+# Defaults to 10.0
+
+# smtp_host:
+# Hostname for sending mail throug smtp. Defaults to localhost.
+
+# smtp_local_hostname:
+# If specified, overrides the FQDN of localhost in the HELO/EHLO
+# command.
+
+# smtp_login:
+# Username to log in to your smtp server, if necessary.
+
+# smtp_password:
+# Password to log in to your smtp server. Must be specified for
+# smtp_login to have an effect.
+
+# smtp_port:
+# Port number for smtp on smtp_host. Defaults to 0.
+
+# smtp_ssl:
+# If true, connects to smtp through SSL. Defaults to false.
+
+# smtp_timeout:
+# Optionally sets the number of seconds after which smtp attempts should
+# time out.
+
+worker-count-uniques: false
+# If true, workers will only count unique pending jobs when deciding
+# whether to stay alive. So if a worker can't get a job to run and other
+# workers are waiting on all of its pending jobs, the worker will die.
+# worker-keep-alive must be true for this to have any effect. Defaults
+# to false.
+
+worker-keep-alive: false
+# If true, workers will stay alive when they run out of jobs to run, as
+# long as they have some pending job waiting to be run. Defaults to false.
+
+worker-ping-interval: 1.0
+# Number of seconds to wait between pinging scheduler to let it know
+# that the worker is still alive. Defaults to 1.0.
+
+# worker-task-limit:
+# .. versionadded:: 1.0.25
+#
+# Maximum number of tasks to schedule per invocation. Upon exceeding it,
+# the worker will issue a warning and proceed with the workflow obtained
+# thus far. Prevents incidents due to spamming of the scheduler, usually
+# accidental. Default: no limit.
+
+# worker-timeout:
+# .. versionadded:: 1.0.20
+#
+# Number of seconds after which to kill a task which has been running
+# for too long. This provides a default value for all tasks, which can
+# be overridden by setting the worker-timeout property in any task. This
+# only works when using multiple workers, as the timeout is implemented
+# by killing worker subprocesses. Default value is 0, meaning no
+# timeout.
+
+# worker-wait-interval:
+# Number of seconds for the worker to wait before asking the scheduler
+# for another job after the scheduler has said that it does not have any
+# available jobs.
+
+[email]
+
+# These parameters control sending error e-mails through Amazon SES.
+
+AWS_ACCESS_KEY: {{ aws_access_key | default(None) }}
+# Your AWS access key
+
+AWS_SECRET_KEY: {{ aws_secret_key | default(None) }}
+# Your AWS secret key
+
+region: {{ aws_region | default('us-east-1') }}
+# Your AWS region. Defaults to us-east-1.
+
+type: {{ luigi_email_type | default(None) }}
+# If set to "ses", error e-mails will be send through Amazon SES.
+# Otherwise, e-mails are sent via smtp.
+
+[scheduler]
+
+# Parameters controlling scheduler behavior
+
+# disable-hard-timeout:
+# Hard time limit after which tasks will be disabled by the server if
+# they fail again, in seconds. It will disable the task if it fails
+# **again** after this amount of time. E.g. if this was set to 600
+# (i.e. 10 minutes), and the task first failed at 10:00am, the task would
+# be disabled if it failed again any time after 10:10am. Note: This setting
+# does not consider the values of the `disable-num-failures` or
+# `disable-window-seconds` settings.
+
+# disable-num-failures:
+# Number of times a task can fail within disable-window-seconds before
+# the scheduler will automatically disable it. If not set, the scheduler
+# will not automatically disable jobs.
+
+# disable-persist-seconds:
+# Number of seconds for which an automatic scheduler disable lasts.
+# Defaults to 86400 (1 day).
+
+# disable-window-seconds:
+# Number of seconds during which disable-num-failures failures must
+# occur in order for an automatic disable by the scheduler. The
+# scheduler forgets about disables that have occurred longer ago than
+# this amount of time. Defaults to 3600 (1 hour).
+
+record_task_history: true
+# If true, stores task history in a database. Defaults to false.
+
+# remove-delay:
+# Number of seconds to wait before removing a task that has no
+# stakeholders. Defaults to 600 (10 minutes).
+
+# retry-delay:
+# Number of seconds to wait after a task failure to mark it pending
+# again. Defaults to 900 (15 minutes).
+
+state-path: {{ luigi_state_file }}
+
+# Path in which to store the luigi scheduler's state. When the scheduler
+# is shut down, its state is stored in this path. The scheduler must be
+# shut down cleanly for this to work, usually with a kill command. If
+# the kill command includes the -9 flag, the scheduler will not be able
+# to save its state. When the scheduler is started, it will load the
+# state from this path if it exists. This will restore all scheduled
+# jobs and other state from when the scheduler last shut down.
+# Sometimes this path must be deleted when restarting the scheduler
+# after upgrading luigi, as old state files can become incompatible
+# with the new scheduler. When this happens, all workers should be
+# restarted after the scheduler both to become compatible with the
+# updated code and to reschedule the jobs that the scheduler has now
+# forgotten about.
+# This defaults to /var/lib/luigi-server/state.pickle
+
+# worker-disconnect-delay::
+# Number of seconds to wait after a worker has stopped pinging the
+# scheduler before removing it and marking all of its running tasks as
+# failed. Defaults to 60.
+
+[task_history]
+
+# Parameters controlling storage of task history in a database
+
+db_connection: {{ luigi_history_db }}
+# Connection string for connecting to the task history db using
+# sqlalchemy.

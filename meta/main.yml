@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: Jan Riethmayer
+  description: luigi central scheduler
+  license: license (MIT)
+  min_ansible_version: 1.8
+  platforms:
+  - name: Ubuntu
+    versions:
+      - trusty
+  categories:
+    - system
+
+dependencies:
+  - { role: Stouts.python }

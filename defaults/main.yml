@@ -1,0 +1,13 @@
+---
+luigi_config_path: /etc/luigi/client.cfg
+luigi_log_file_path: /var/log/luigid
+luigi_history_db: sqlite:///usr/local/var/luigi-task-hist.db
+luigi_pid_file: /usr/local/var/luigi.pid
+luigi_record_task_history: True
+luigi_state_file: /usr/local/var/luigi-state.pickle
+
+# required for AWS SES
+# aws_access_key:
+# aws_secret_key:
+luigi_email_type: None
+  # ses : send via AWS SES

@@ -1,10 +1,14 @@
 # Role Name
 
-Installs a luigi central scheduler.
+Installs a [luigi](http://luigi.readthedocs.org/en/latest/) central scheduler.
+For more information check out http://luigi.readthedocs.org/en/latest/
 
 ## Dependencies
 
-* sqlite
+* sqlite3 (apt)
+* python-sqlalchemy (apt)
+* luigi (pip)
+* tornado (pip)
 
 ## Role Variables
 
@@ -22,9 +26,9 @@ Installs a luigi central scheduler.
 
 ## Example Playbook
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+This will install the luigi daemon on your server and start it with an init script via `/etc/init.d/luigi-server`.
 
-    - hosts: servers
+    - hosts: server
       roles:
          - { role: riethmayer.luigi-server }
 
